@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fil">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mga Libro | AklatBata</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="pg px-4"><div class="max-w-6xl mx-auto">
+<h1 class="fd text-4xl font-extrabold text-[#1B4332] flex items-center gap-3"><span id="mm" class="w-12 flt"></span>Katalogo ng mga Libro</h1>
+<p class="mt-1">Pumili ng kategorya, itakda ang presyo, o maghanap ng paboritong aklat.</p>
+<div class="card p-4 mt-6 grid gap-4 md:grid-cols-2 bg-[#EBF7FC]">
+<label class="font-bold text-sm">Paghahanap<input id="q" class="inp mt-1" placeholder="Maghanap ng pamagat ng libro o may-akda..." oninput="draw()"></label>
+<label class="font-bold text-sm">Pinakamataas na presyo: <span id="pv"></span><input id="pr" type="range" min="50" class="w-full mt-3 accent-[#F59E0B]" oninput="draw()"></label></div>
+<div id="tabs" class="flex flex-wrap gap-2 mt-5" role="tablist"></div>
+<p id="cn" class="mt-4 text-sm font-bold"></p>
+<div id="g"></div></div></main>
+<script src="app.js"></script>
+<script>
+let K=new URLSearchParams(location.search).get('k')||'';
+function draw(){const q=$('#q').value.toLowerCase(),m=+$('#pr').value;$('#pv').textContent=php(m);
+const l=books.filter(b=>(!K||b.c==K)&&b.p<=m&&(b.t+' '+b.a).toLowerCase().includes(q));
+$('#cn').textContent=l.length+' libro ang nakita';
+const gr=cats.map(k=>[k,l.filter(b=>b.c==k.n)]).filter(x=>x[1].length);
+$('#g').innerHTML=gr.length?gr.map(([k,x])=>`<div class="mt-8"><div class="flex items-center gap-3"><span class="w-12 shrink-0 flt">${mascot(k.m)}</span><h2 class="fd text-2xl text-[#1B4332]">${k.n}</h2><span class="pl2">${x.length}</span></div>${slider(x)}</div>`).join(''):'<p class="text-center py-10 font-bold">Walang nakitang libro. Subukan ang ibang kategorya o presyo.</p>';
+$('#tabs').innerHTML=[['','Lahat']].concat(cats.map(c=>[c.n,c.n])).map(t=>`<button role="tab" class="btn ${K==t[0]?'g':'w'}" onclick="K='${t[0]}';draw()">${t[1]}</button>`).join('');slInit();ri()}
+function pageInit(){$('#mm').innerHTML=mascot('frog');const mx=Math.max(100,...books.map(b=>b.p));$('#pr').max=mx;$('#pr').value=mx;draw();if(location.hash=='#q')$('#q').focus()}
+</script>
+</body>
+</html>
